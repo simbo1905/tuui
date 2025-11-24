@@ -17,7 +17,13 @@ const mainAvailChannels: string[] = [
   'msgGetApiToken',
   'msgMcpServersInit',
   'msgMcpServersStop',
-  'msgWindowReload'
+  'msgWindowReload',
+  'storage:getItem',
+  'storage:setItem',
+  'storage:removeItem',
+  'storage:clear',
+  'storage:keys',
+  'storage:length'
 ]
 
 const rendererAvailChannels: string[] = [

@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { createStatePersistence } from 'pinia-plugin-state-persistence'
+import { sqliteStorage } from '@/renderer/utils/sqliteStorage'
 
 import App from '@/renderer/App.vue'
 import router from '@/renderer/router'
@@ -42,7 +43,7 @@ declare global {
 
 const app = createApp(App)
 const pinia = createPinia()
-pinia.use(createStatePersistence())
+pinia.use(createStatePersistence({ storage: sqliteStorage }))
 
 app.use(vuetify).use(i18n).use(router).use(pinia).use(Vue3Lottie)
 

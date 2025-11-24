@@ -29,6 +29,7 @@ import { getCachedText } from './aid/utils'
 import { McpClientResponse, CommandResponse, McpInitResponse } from './types'
 
 import { IpcFileTransferRequest, IpcFileTransferResponse } from '@/types/ipc'
+import { DatabaseManager } from './database/index'
 
 const handlerRegistry = new Map<string, Function>()
 
@@ -275,6 +276,32 @@ export default class IPCs {
 
     ipcMain.handle('list-startups', () => {
       return loadLlmFile(Constants.ASSETS_PATH.startup)
+    })
+
+    const db = DatabaseManager.getInstance()
+
+    ipcMain.handle('storage:getItem', (_event, key: string) => {
+      return db.getItem(key)
+    })
+
+    ipcMain.handle('storage:setItem', (_event, key: string, value: string) => {
+      db.setItem(key, value)
+    })
+
+    ipcMain.handle('storage:removeItem', (_event, key: string) => {
+      db.removeItem(key)
+    })
+
+    ipcMain.handle('storage:clear', (_event) => {
+      db.clear()
+    })
+
+    ipcMain.handle('storage:keys', (_event) => {
+      return db.getAllKeys()
+    })
+
+    ipcMain.handle('storage:length', (_event) => {
+      return db.getLength()
     })
   }
 
