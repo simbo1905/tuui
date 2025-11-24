@@ -7,11 +7,13 @@ import router from '@/renderer/router'
 import vuetify from '@/renderer/plugins/vuetify'
 import i18n from '@/renderer/plugins/i18n'
 import Vue3Lottie from 'vue3-lottie'
+import { sqlitePersistStorage } from '@/renderer/utils/sqliteStorage'
 
 import type { MCPAPI, DXTAPI } from '@/types/mcp'
 import type { LlmConfig } from '@/types/llm'
 import type { PopupConfig } from '@/types/popup'
 import type { StartupConfig } from '@/types/startup'
+import type { StorageBridge } from '@/types/storage'
 
 // Add API key defined in contextBridge to window object type
 declare global {
@@ -37,12 +39,18 @@ declare global {
       refresh: () => Promise<{}>
       update: (_name: string) => Promise<{}>
     }
+    storageApi?: StorageBridge
   }
 }
 
 const app = createApp(App)
 const pinia = createPinia()
-pinia.use(createStatePersistence())
+pinia.use(
+  createStatePersistence({
+    key: 'tuui',
+    storage: sqlitePersistStorage
+  })
+)
 
 app.use(vuetify).use(i18n).use(router).use(pinia).use(Vue3Lottie)
 

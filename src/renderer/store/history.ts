@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import localForage from 'localforage'
 import { v4 as uuidv4 } from 'uuid'
 import { useMessageStore } from '@/renderer/store/message'
 
@@ -17,8 +16,7 @@ export const useHistoryStore = defineStore('historyStore', {
     conversations: [] as SessionEntry[]
   }),
   persist: {
-    include: ['conversations'],
-    storage: localForage
+    include: ['conversations']
   },
   getters: {},
   actions: {

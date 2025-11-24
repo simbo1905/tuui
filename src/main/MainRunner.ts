@@ -9,6 +9,7 @@ import IPCs, { registerIpcHandlers } from './IPCs'
 import { createTray, hideWindow, showWindow } from './tray'
 
 import { loadConfig } from './mcp/init'
+import { existsSync } from 'fs'
 
 const options = {
   width: Constants.IS_DEV_ENV ? 1500 : 1280,
@@ -63,6 +64,13 @@ export const createMainWindow = async (): Promise<BrowserWindow> => {
         enabled: false
       }
 
+  const shouldDisableTray =
+    process.platform === 'linux' && !existsSync('/run/dbus/system_bus_socket')
+  if (shouldDisableTray) {
+    trayOptions.enabled = false
+    console.warn('System tray disabled because no DBus session was detected.')
+  }
+
   // trayWindow requires tray.enabled=true
   if (trayOptions.enabled && trayOptions.trayWindow) {
     opt = {
@@ -101,7 +109,11 @@ export const createMainWindow = async (): Promise<BrowserWindow> => {
   })
 
   if (trayOptions.enabled) {
-    createTray(mainWindow, trayOptions)
+    try {
+      createTray(mainWindow, trayOptions)
+    } catch (error) {
+      console.error('Failed to initialize system tray:', error)
+    }
   }
 
   if (trayOptions.enabled && trayOptions.trayWindow) {

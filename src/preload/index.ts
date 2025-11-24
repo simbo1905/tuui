@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron'
 import type { AsyncFunction, MCPAPI, DXTAPI, McpMetadataDxt, ClientProfile } from '@/types/mcp'
+import type { StorageBridge } from '@/types/storage'
 import type { LlmConfig } from '@/types/llm'
 import type { PopupConfig } from '@/types/popup'
 import type { StartupConfig } from '@/types/startup'
@@ -17,7 +18,12 @@ const mainAvailChannels: string[] = [
   'msgGetApiToken',
   'msgMcpServersInit',
   'msgMcpServersStop',
-  'msgWindowReload'
+  'msgWindowReload',
+  'storage:get',
+  'storage:set',
+  'storage:delete',
+  'storage:clear',
+  'storage:keys'
 ]
 
 const rendererAvailChannels: string[] = [
@@ -91,6 +97,16 @@ contextBridge.exposeInMainWorld('mainApi', {
     throw new Error(`Unknown ipc channel name: ${channel}`)
   }
 })
+
+const storageBridge: StorageBridge = {
+  get: (key: string) => ipcRenderer.invoke('storage:get', key),
+  set: (key: string, value: string) => ipcRenderer.invoke('storage:set', key, value),
+  delete: (key: string) => ipcRenderer.invoke('storage:delete', key),
+  clear: () => ipcRenderer.invoke('storage:clear'),
+  keys: () => ipcRenderer.invoke('storage:keys')
+}
+
+contextBridge.exposeInMainWorld('storageApi', storageBridge)
 
 /* ------------------------------ LLM Config ------------------------------ */
 

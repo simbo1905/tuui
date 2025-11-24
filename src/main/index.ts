@@ -44,7 +44,8 @@ const registerShortcuts = async () => {
 async function createWindow() {
   try {
     mainWindow = await createMainWindow()
-  } catch {
+  } catch (error) {
+    console.error('Failed to create main window:', error)
     app.exit()
   }
 }

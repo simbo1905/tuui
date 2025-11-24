@@ -25,6 +25,7 @@ import { McpbManifestAny } from '@anthropic-ai/mcpb'
 import { closeCommandPicker } from './aid/commands'
 
 import { commandSelectionInvoke, mcpServersProcessCallback } from './index'
+import { registerStorageHandlers } from './storage'
 import { getCachedText } from './aid/utils'
 import { McpClientResponse, CommandResponse, McpInitResponse } from './types'
 
@@ -46,6 +47,7 @@ export default class IPCs {
   static currentFeatures: McpFeatureObject[] = []
 
   static initialize(): void {
+    registerStorageHandlers()
     // Get application version
     ipcMain.handle('msgRequestAppInfo', () => {
       return {
