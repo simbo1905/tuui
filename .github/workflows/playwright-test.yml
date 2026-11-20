@@ -14,10 +14,15 @@ on:
     branches: [main]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   playwright-test:
     runs-on: ${{ matrix.os }}
     name: Test Node.js ${{ matrix.node_version }} on ${{ matrix.os }}
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
